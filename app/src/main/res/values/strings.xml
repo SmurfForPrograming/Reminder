@@ -7,4 +7,7 @@
         <item>Arrival</item>
         <item>Departure</item>
     </string-array>
+        <string name="title_activity_more">More</string>
+    <string name="title_activity_init_location">InitLocation</string>
+        <string name="title_activity_main_map">MainMap</string>
 </resources>

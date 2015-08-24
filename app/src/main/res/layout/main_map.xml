@@ -1,0 +1,83 @@
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TaskRoadMap" >
+
+    <fragment
+        android:id="@+id/map"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        class="com.google.android.gms.maps.SupportMapFragment"/>
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Povecaj"
+        android:id="@+id/buttonPovecaj"
+        android:onClick="On_clickPovecaj"
+        android:layout_above="@+id/buttonSmanji"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Smanji"
+        android:id="@+id/buttonSmanji"
+        android:onClick="On_clickSmanji"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/buttonPovecaj"
+        android:layout_alignEnd="@+id/buttonPovecaj" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PovecajF"
+        android:id="@+id/povecajF"
+        android:layout_above="@+id/buttonSmanji"
+        android:layout_toRightOf="@+id/buttonPovecaj"
+        android:layout_toEndOf="@+id/buttonPovecaj"
+        android:onClick="On_clickPovecajFastest" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SmanjiF"
+        android:id="@+id/smanjiF"
+        android:onClick="On_clickSmanjiFastest"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/povecajF"
+        android:layout_alignEnd="@+id/povecajF" />
+
+    <EditText
+        android:id="@+id/editText1"
+        android:textColor="#FFFFFF"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|center_vertical"
+        android:ems="10"
+        android:layout_alignBottom="@+id/button1"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+        <requestFocus />
+    </EditText>
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|center_vertical"
+        android:text="Kreni"
+        android:onClick="geoLocate"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/editText1"
+        android:layout_toEndOf="@+id/editText1" />
+
+
+</RelativeLayout>

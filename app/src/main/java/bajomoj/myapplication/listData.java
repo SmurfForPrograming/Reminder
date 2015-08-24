@@ -1,20 +1,13 @@
 package bajomoj.myapplication;
 
-import android.app.Application;
-import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.widget.Toast;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by Matija077 on 5/15/2015.
@@ -26,12 +19,14 @@ public class listData implements Parcelable, Serializable {
     private Integer choose;
     private String dateTime;
     private Integer  repeatInterval;
-    private Integer radius;
+    private double radius;
+    private double latitude;
+    private double longitude;
 
 
 
 
-    public listData(Boolean active, String location, String description, Integer choose,String dateTime,  Integer repeatInterval, Integer radius ) {
+    public listData(Boolean active, String location, String description, Integer choose,String dateTime,  Integer repeatInterval, double radius, Double latitude, Double longitude ) {
         super();
         this.active = active;
         this.location = location;
@@ -40,6 +35,8 @@ public class listData implements Parcelable, Serializable {
         this.dateTime = dateTime;
         this.repeatInterval = repeatInterval;
         this.radius = radius;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
 
@@ -84,14 +81,18 @@ public class listData implements Parcelable, Serializable {
     }
 
 
-    public Integer getRadius() {
+    public double getRadius() {
         return radius;
     }
-    public void setRadius() {
+    public void setRadius(Integer radius) {
         this.radius = radius;
     }
 
+    public double getLatitude () {return latitude;}
+    public void setLatitude (double latitude) {this.latitude = latitude;}
 
+    public double getLongitude () {return longitude;}
+    public void setLongtitude (double longitude) {this.longitude = longitude;}
 
      //parcelable part
 
@@ -103,7 +104,9 @@ public class listData implements Parcelable, Serializable {
         this.choose = read.readInt();
         this.dateTime = read.readString();
         this.repeatInterval = read.readInt();
-        this.radius = read.readInt();
+        this.radius = read.readDouble();
+        this.latitude = read.readDouble();
+        this.longitude = read.readDouble();
     }
 
     @Override
@@ -120,11 +123,9 @@ public class listData implements Parcelable, Serializable {
         dest.writeInt(choose);
         dest.writeString(dateTime);
         dest.writeInt(repeatInterval);
-        dest.writeInt(radius);
-
-
-
-
+        dest.writeDouble(radius);
+        dest.writeDouble(latitude);
+        dest.writeDouble(longitude);
 
     }
 

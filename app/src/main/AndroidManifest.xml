@@ -2,11 +2,52 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="bajomoj.myapplication" >
 
+    <uses-sdk
+        android:minSdkVersion="11"
+        android:targetSdkVersion="19" />
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <!-- dobivanje douštenja za MAPE -->
+    <permission
+        android:name="bajomoj.myapplication.permission.MAPS_RECEIVE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="bajomoj.myapplication.MAPS_RECEIVE" />
+
+    <!-- doupuštenje za Internet, vanjsku pohranu i ostalo -->
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.google.android.providers.gfs.permission.READ_GSERVICES" />
+
+
+    <!-- nije potrebno za Google Maps API v2, ali je recommended -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <!-- OpenGL verzija 2.0 za renderanje screen-a -->
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
+
+    <android:uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <android:uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="18" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
+
+        <!-- kljuc od Google-a -->
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyCV9Plzy-RcaJ30cnXw_jRgXjg5czLIS9A" />
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" >
@@ -19,6 +60,26 @@
         <activity
             android:name=".AddActivity"
             android:label="@string/title_activity_add" >
+        </activity>
+        <activity
+            android:name=".More"
+            android:label="@string/title_activity_more" >
+        </activity>
+        <activity
+            android:name=".InitLocation"
+            android:label="@string/title_activity_init_location"
+            android:parentActivityName=".AddActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="bajomoj.myapplication.AddActivity" />
+        </activity>
+        <activity
+            android:name=".MainMap"
+            android:label="@string/title_activity_main_map"
+            android:parentActivityName=".More" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="bajomoj.myapplication.More" />
         </activity>
     </application>
 
