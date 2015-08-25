@@ -41,25 +41,15 @@ import java.util.TimerTask;
 
 public class MainActivity extends Activity  {
     ArrayList<listData> myListdata = new ArrayList<listData>();
-    String FILENAME = "GPS_reminder_sort_vol4";
+    String FILENAME = "GPS_reminder_sort_vol1";
     static final int EXPECTED_CODE_ADD = 1;
     static final int EXPECTED_CODE_MORE = 2;
     static int rowIndex = -1;
     static final double radius = 60; //za promjenit kasnije
     double latitude = 0;
     double longitude = 0;
-
     Circle mapCircle;
-   static LocationManager manager;
-
-   // Location mCurrentLocation;
-
-    /*static GoogleApiClient mGoogleApiClient;
-    static Location mLastLocation;
-    LocationRequest mLocationRequest;
-    String mLastUpdateTime;
-    */
-
+    static LocationManager manager;
 
 
     @Override
@@ -72,42 +62,39 @@ public class MainActivity extends Activity  {
         Button addLayout = (Button) findViewById(R.id.addButton);
         addLayout.setOnClickListener(addLayoutHandler);
 
-       // createLocationRequest();
 
+        FileInputStream fileInputStream;
+        ObjectInputStream objectInputStream = null;
+        try {
+            Integer size;
+            fileInputStream = getApplicationContext().openFileInput(FILENAME);
+            objectInputStream = new ObjectInputStream(fileInputStream);
+            size = (int) objectInputStream.readInt();
+            for (int counter = 0; counter < size; counter++) {
+                myListdata.add((listData) objectInputStream.readObject());
+            }
+            objectInputStream.close();
 
-            FileInputStream fileInputStream;
-            ObjectInputStream objectInputStream = null;
-            try {
-                Integer size;
-                fileInputStream = getApplicationContext().openFileInput(FILENAME);
-                objectInputStream = new ObjectInputStream(fileInputStream);
-                size = (int) objectInputStream.readInt();
-                for (int counter = 0; counter < size; counter++) {
-                    myListdata.add((listData) objectInputStream.readObject());
-                }
-                objectInputStream.close();
-
-            } catch (FileNotFoundException e1) {
-                e1.printStackTrace();
-            } catch (StreamCorruptedException e1) {
-                e1.printStackTrace();
-            } catch (NotSerializableException e1) {
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            } catch (ClassNotFoundException e1) {
-                e1.printStackTrace();
-            } finally {
-                if (objectInputStream != null) {
-                    try {
-                        objectInputStream.close();
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
+        } catch (FileNotFoundException e1) {
+            e1.printStackTrace();
+        } catch (NotSerializableException e1) {
+            e1.printStackTrace();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            if (objectInputStream != null) {
+                try {
+                    objectInputStream.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
                 }
             }
+        }
 
         final Handler handler = new Handler();
-        Timer    timer = new Timer();
+        Timer timer = new Timer();
         TimerTask doAsynchronousTask = new TimerTask() {
             @Override
             public void run() {
@@ -116,9 +103,7 @@ public class MainActivity extends Activity  {
                     public void run() {
                         try {
                             check();
-                        }
-                        catch (Exception e) {
-
+                        } catch (Exception e) {
                         }
                     }
                 });
@@ -126,75 +111,9 @@ public class MainActivity extends Activity  {
         };
         timer.schedule(doAsynchronousTask, 0, 5000);
 
-        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE );
+        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Location location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        //novi dio
-        /*mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(LocationServices.API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
-                */
     }
-
-    /*
-    @Override
-    public void onStart () {
-        super.onStart();
-        mGoogleApiClient.connect();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        mGoogleApiClient.disconnect();
-    }
-
-    @Override
-    public void onConnected(Bundle connectionHint) {
-        /* mLastLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
-        if (mLastLocation != null) {
-           String msg = String.valueOf(mLastLocation.getLatitude());
-            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-        }
-        */
-      /*  startLocationUpdates();
-    }
-
-    protected void startLocationUpdates() {
-        PendingResult<Status> pendingResult = LocationServices.FusedLocationApi.requestLocationUpdates(
-                mGoogleApiClient, mLocationRequest, (LocationListener) this);
-
-    }
-
-
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        mLastLocation = location;
-        mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-        //addMarker();
-        //checkIfHeCame(location);
-    }
-
-
-
-    /*@Override
-    protected void onStart() {
-        super.onStart();
-
-    }*/
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode==1) {
@@ -210,7 +129,6 @@ public class MainActivity extends Activity  {
         }
         if (requestCode==2) {
             if (resultCode==RESULT_OK) {
-                //Toast.makeText(getApplicationContext(), "from more", Toast.LENGTH_SHORT).show();
                 Bundle b = data.getExtras();
                 deleteItem();
                 //listData object = b.getParcelable("parcel");
@@ -220,18 +138,14 @@ public class MainActivity extends Activity  {
         }
     }
 
-
-
     @Override
     protected void onResume() {
         super.onResume();
-
         populateListView();
     }
 
     /*@Override
     protected void onStop() {
-
     }*/
 
     @Override
@@ -249,7 +163,6 @@ public class MainActivity extends Activity  {
                     objectOutputStream.writeObject(oneData);
                     objectOutputStream.flush();
                 }
-                objectOutputStream.flush();
                 objectOutputStream.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -264,17 +177,7 @@ public class MainActivity extends Activity  {
                     e.printStackTrace();
                 }
         }
-
     }
-
-    /*listData.DepArr choice1 = listData.DepArr.Arrival;
-                        listData.DepArr choice2 = listData.DepArr.Departure;*/
-
-        /*private void populatelistData() {
-            myListdata.add(new listData(true, "Vukovarska 58", "Predati izvješće", choice1, 5, 100));
-            myListdata.add(new listData(false,"Krešimirova 18", "Kupiti  pokaznu", choice1, 10, 30));
-            myListdata.add(new listData(true, "Bartola Kašića 5/4", "Vratiti  knjigu", choice2, 1, 60));
-        } INITAL DATA TEST */
 
         private void populateListView() {
             Collections.sort(myListdata, new listComparator());
@@ -284,42 +187,9 @@ public class MainActivity extends Activity  {
             list.setAdapter(adapter);
         }
 
-
-
         private void registerClickCallBack() {
             ListView list = (ListView) findViewById(R.id.reminderListView);
-
-           /*list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    listData clickedItem = myListdata.get(position);
-
-                    if (view.getId() == R.id.checkBox) {
-                        CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
-
-                        clickedItem.setActive(!clickedItem.getActive());
-                        populateListView();
-                    }
-
-                   //CHECKBOX DIO KOJI TREBA DOVRSITI
-                   /*if (view.getId() == R.id.checkBox) {
-                        Toast.makeText(getApplicationContext(), clickedItem.getActive().toString(), Toast.LENGTH_SHORT).show();
-                        if (clickedItem.getActive()) {
-                            clickedItem.setActive(false);
-                        } else {
-                            clickedItem.setActive(true);
-                        }
-
-                        populateListView();
-                    }*/
-
-                /*}
-            });*/
         }
-
-
 
 
     private  class MyListAdapter extends ArrayAdapter {
@@ -343,19 +213,6 @@ public class MainActivity extends Activity  {
                 final CheckBox activeCheckBox = (CheckBox) itemView.findViewById(R.id.checkBox);
                 activeCheckBox.setChecked(currentData.getActive());
                 //activeCheckBox.setOnClickListener((OnClickListener) this); CHEKBOX IO KOJI TREBA DOVRSIIT
-
-
-               /* if (currentData.getDepArr() == 0) {
-                    Toast.makeText(getApplicationContext(),"Departure", Toast.LENGTH_SHORT).show();
-                } else if (currentData.getDepArr()== 1) {
-                    Toast.makeText(getApplicationContext(),"Arrival", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getApplicationContext(),"ne", Toast.LENGTH_SHORT).show();
-                }*/
-
-                    //Toast.makeText(getApplicationContext(),currentData.getRepeatInterval().toString(), Toast.LENGTH_SHORT).show();
-
-
 
                 TextView locationText = (TextView) itemView.findViewById(R.id.item_Location);
                 locationText.setText(currentData.getLocation());
@@ -401,77 +258,26 @@ public class MainActivity extends Activity  {
 
                 Intent addLayoutIntent = new Intent(MainActivity.this, AddActivity.class);
                 startActivityForResult(addLayoutIntent, EXPECTED_CODE_ADD);
-
             }
         };
 
 
-
-
-
-/*
-  LocationListener locationListener = new LocationListener() {
-        @Override
-        public void onLocationChanged(Location location) {
-            latitude = location.getLatitude();
-            longitude = location.getLongitude();
-        }
-
-
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
-
-        }
-    };
-   */
-
-
-
         void check() {
-            Boolean[] checkArray = new Boolean[myListdata.size()];
             for(int counter=0; counter < myListdata.size(); counter++) {
                 if (myListdata.get(counter).getActive()) {
-                    if (myListdata.get(counter).getDateTime().compareTo(new Date()) < 0) { //compareTo returns positive int if first item is bigger
-                        //LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE );
-
-                        //Location location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-                        //double lat = location.getLatitude();
-
-                        //double lon = location.getLongitude();
-
-
-
-                        // Location location = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-                        //double lat = location.getLatitude();
-
-                        //double lon = location.getLongitude();
+                    if (myListdata.get(counter).getDateTime().compareTo(new Date()) < 0) {
+                        //compareTo returns positive int if first item is bigger
 
                         LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE );
-
                         Criteria criteria = new Criteria();
-
                         manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 8000, 8000, new LocationListener() {
                             @Override
                             public void onLocationChanged(Location location) {
-                                // TODO Auto-generated method stub
                                 latitude = location.getLatitude();
                                 longitude = location.getLongitude();
-                                String poruka = String.valueOf(latitude);
-                                String poruka2 = String.valueOf(longitude);
-                                Toast.makeText(getApplicationContext(), "Trenutna lokacija: " + poruka + " AND " + poruka2, Toast.LENGTH_SHORT).show();
+                                String msg1 = String.valueOf(latitude);
+                                String msg2 = String.valueOf(longitude);
+                                Toast.makeText(getApplicationContext(), "Trenutna lokacija: " + msg1 + " AND " + msg2, Toast.LENGTH_SHORT).show();
                             }
                             @Override
                             public void onProviderDisabled(String provider) {
@@ -488,22 +294,11 @@ public class MainActivity extends Activity  {
                             }
                         });
 
-
-                       // Toast.makeText(getApplicationContext(), "vece" + lat + lon, Toast.LENGTH_SHORT).show();
-                        //mapCircle.setCenter(new LatLng(myListdata.get(counter).getLatitude(), myListdata.get(counter).getLongitude()));
                         float[] distance = new float[2];
-
-                        //LatLng currentLatLng = new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude());
-                        //String poruka = String.valueOf(currentLatLng.latitude);
-                        //Toast.makeText(getApplicationContext(), poruka, Toast.LENGTH_SHORT).show();
-
 
                         Location.distanceBetween(latitude, longitude,
                                 myListdata.get(counter).getLatitude(),myListdata.get(counter).getLongitude(), distance);
 
-                       // String poruka = String.valueOf(latitude);
-                       // String poruka2 = String.valueOf(longitude);
-                       // Toast.makeText(getApplicationContext(), "Trenutna: " + poruka + "iii " + poruka2, Toast.LENGTH_SHORT).show();
                     if (latitude != 0 && longitude != 0) {
                         if (distance[0] > radius) {
                             Toast.makeText(getBaseContext(), "Izvan kruga si ", Toast.LENGTH_LONG).show();
@@ -512,7 +307,6 @@ public class MainActivity extends Activity  {
                                 mp = MediaPlayer.create(this, R.raw.glass_ping);
                                 mp.start();
                                 Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
-                                // Vibrate for 500 milliseconds
                                 v.vibrate(500);
                             }
                         } else {
@@ -522,7 +316,6 @@ public class MainActivity extends Activity  {
                                 mp = MediaPlayer.create(this, R.raw.glass_ping);
                                 mp.start();
                                 Vibrator v = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
-                                // Vibrate for 500 milliseconds
                                 v.vibrate(500);
                             }
                         }
@@ -534,43 +327,23 @@ public class MainActivity extends Activity  {
             }
         }
 
-  /*  protected void createLocationRequest() {
-        //if (carMode != 0)
-        //mLocationRequest.setSmallestDisplacement(10);
-        // else
-        // mLocationRequest.setSmallestDisplacement(10);
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(10000);
-        mLocationRequest.setFastestInterval(10000);
-        mLocationRequest.setSmallestDisplacement(0);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-    }
-    */
-
-
 
     void  deleteItem() {
         myListdata.remove(rowIndex);
     }
 
-
 }
 
 class listComparator implements Comparator<listData> {
-
-
     @Override
-    public int compare(listData lhs, listData rhs) {
-        int activeCompare = lhs.getActive().compareTo(rhs.getActive());
+    public int compare(listData itemLeft, listData itemRight) {
+        int activeCompare = itemLeft.getActive().compareTo(itemRight.getActive());
         if (activeCompare > 0) {
             return  -activeCompare;
         } else if (activeCompare == 0) {
-            return lhs.getDateTime().compareTo(rhs.getDateTime());
+            return itemLeft.getDateTime().compareTo(itemRight.getDateTime());
         }
         else return 0;
     };
-
-
-
-    }
+}
 

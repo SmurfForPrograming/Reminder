@@ -27,32 +27,28 @@ import java.util.Calendar;
 
 public class AddActivity extends Activity
 {
-
     private Boolean active = false;
     private String location;
     private String description;
     public enum DepArr {Departure, Arrival}
     DepArr depArr;
     Integer choose;
-    String dateTime = "01/23/2030 12:12:11";
+    String dateTime;
     private int  repeatInterval = 40; //samo za probu
-    private double radius = 100; //samo za probu
+    private double radius; //samo za probu
     ArrayList<listData> myListdata = new ArrayList<listData>();
     Spinner choseDepArr;
     private double latitude;
     private double longitude;
     static final int EXPECTED_CODE_MAPA = 1;
     Button btn;
-    int year_x, month_x, day_x;
+    int year, month, day;
     static final int DIALOG_ID = 0;
     Button button_stpd;
     static final int DIALOG_ID2 = 2;
-    int hour_x;
-    int minute_x;
-    static String datum = "";
-    static String vrijeme = "";
-
-
+    int hour, minute;
+    static String date = "";
+    static String time = "";
 
 
     @Override
@@ -64,7 +60,6 @@ public class AddActivity extends Activity
         Bundle b = getIntent().getExtras();
         /*myParcelable object = b.getParcelable("parcel"); ZA DOBITI CIJELU LISTU
         myListdata = object.getMyListdata();*/
-
 
         CheckBox addCheckBox = (CheckBox) findViewById(R.id.activeCheckBox);
         addCheckBox.setOnCheckedChangeListener(addCheckBoxHandler);
@@ -114,10 +109,6 @@ public class AddActivity extends Activity
                 R.layout.support_simple_spinner_dropdown_item, depArr.values()));
         choseDepArr.setOnItemSelectedListener(choseDepArrHanlder);
 
-
-
-
-
         Button saveButton = (Button) findViewById(R.id.saveButton);
         saveButton.setOnClickListener(allButtonsHandler);
 
@@ -129,9 +120,9 @@ public class AddActivity extends Activity
 
 
         final Calendar cal = Calendar.getInstance();
-        year_x = cal.get(Calendar.YEAR);
-        month_x = cal.get(Calendar.MONTH);
-        day_x = cal.get(Calendar.DAY_OF_MONTH);
+        year = cal.get(Calendar.YEAR);
+        month = cal.get(Calendar.MONTH);
+        day = cal.get(Calendar.DAY_OF_MONTH);
 
         showDialogOnButtonClick();
         showTimePickerDialog();
@@ -141,7 +132,6 @@ public class AddActivity extends Activity
     //////////////////////////////////////
     public void showDialogOnButtonClick() {
         btn = (Button)findViewById(R.id.showDate);
-
         btn.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -152,27 +142,18 @@ public class AddActivity extends Activity
         );
     }
 
-
-
-   /* @Override
-    protected Dialog onCreateDialog(int id) {
-
-    }*/
-
     private DatePickerDialog.OnDateSetListener dpickerListener
             = new
             DatePickerDialog.OnDateSetListener() {
                 @Override
                 public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                    year_x = year;
-                    month_x = monthOfYear + 1;
-                    day_x = dayOfMonth;
-                    datum = String.format("%02d" + "/" + "%02d" + "/" + "%04d", month_x, day_x, year_x);
-                    //dateTime = datum;
-                    Toast.makeText(getApplicationContext(), datum, Toast.LENGTH_SHORT).show();
+                    year = year;
+                    month = monthOfYear + 1;
+                    day = dayOfMonth;
+                    date = String.format("%02d" + "/" + "%02d" + "/" + "%04d", month, day, year);
+                    Toast.makeText(getApplicationContext(), date, Toast.LENGTH_SHORT).show();
                 }
             };
-
 
     public void showTimePickerDialog() {
         button_stpd = (Button)findViewById(R.id.showTime);
@@ -186,39 +167,34 @@ public class AddActivity extends Activity
         );
     }
 
-
-
     protected TimePickerDialog.OnTimeSetListener kTimePickerListener =
             new TimePickerDialog.OnTimeSetListener() {
                 @Override
-                public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                public void onTimeSet(TimePicker view, int hourOfDay, int minuteOfDay) {
                     if (hourOfDay < 10) {
 
                     }
-                    hour_x = hourOfDay;
-                    minute_x = minute;
-                   vrijeme = String.format("%02d:%02d", hour_x, minute_x);
+                    hour = hourOfDay;
+                    minute= minuteOfDay;
+                    time = String.format("%02d:%02d", hour, minute);
                     EditText editText = (EditText)findViewById(R.id.addDate);
-                    editText.setText("Date: " + datum + " Time: " + vrijeme, TextView.BufferType.EDITABLE);
-                    dateTime = datum + " " + vrijeme;
-                    Toast.makeText(getApplicationContext(), vrijeme, Toast.LENGTH_SHORT).show();
+                    editText.setText("Date: " + date + " Time: " + time, TextView.BufferType.EDITABLE);
+                    dateTime = date + " " + time;
+                    Toast.makeText(getApplicationContext(), time, Toast.LENGTH_SHORT).show();
                 }
             };
-
-
 
     @Override
     protected Dialog onCreateDialog(int id) {
         if (id == DIALOG_ID) {
-            return new DatePickerDialog(this, dpickerListener, year_x, month_x, day_x);
+            return new DatePickerDialog(this, dpickerListener, year, month, day);
         } else
         if  (id == 2) {
-            return new TimePickerDialog(this, kTimePickerListener, hour_x, minute_x, true);
+            return new TimePickerDialog(this, kTimePickerListener, hour, minute, true);
         }
         else
             return null;
     }
-
 
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -228,8 +204,6 @@ public class AddActivity extends Activity
                 longitude = data.getDoubleExtra("lng", longitude);
                 radius = data.getDoubleExtra("radius", radius);
                 location = data.getStringExtra("location");
-
-                //Toast.makeText(getApplicationContext(), "onactivityresult", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -260,8 +234,6 @@ public class AddActivity extends Activity
             else {
                 Toast.makeText(getApplicationContext(), parent.getItemAtPosition(position).toString() +"treci", Toast.LENGTH_SHORT).show();
             }
-
-
         }
 
         @Override
@@ -291,14 +263,12 @@ public class AddActivity extends Activity
                     setResult(RESULT_OK, mainActivityIntent);
                     finish();
                     break;
-
                 }
                 case R.id.discardButton: {
                     Intent mainActivityIntent = new Intent(AddActivity.this, MainActivity.class);
                     setResult(RESULT_CANCELED, mainActivityIntent);
                     finish();
                     break;
-
                 }
                 case R.id.locationButton: {
                     Intent addLayoutIntent = new Intent(AddActivity.this, InitLocation.class);
@@ -308,8 +278,4 @@ public class AddActivity extends Activity
             }
         }
     };
-
-
-
-
 }
